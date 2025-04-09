@@ -1,0 +1,13 @@
+plugins {
+    id "java-platform"
+}
+
+javaPlatform {
+    allowDependencies()
+}
+
+dependencies {
+    constraints {
+        api "net.bytebuddy:byte-buddy:1.17.5"
+    }
+}
