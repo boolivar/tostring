@@ -26,6 +26,7 @@ tasks.withType(Javadoc).configureEach {
 
 tasks.named("test") {
     useJUnitPlatform()
+    jvmArgs += "-javaagent:${configurations.mockitoAgent.asPath}"
     finalizedBy "jacocoTestReport"
 }
 
@@ -81,6 +82,22 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    mockitoAgent
+}
+
 dependencies {
     implementation platform(project(":platform"))
+    mockitoAgent platform(project(":platform"))
+
+    testImplementation "org.assertj:assertj-core"
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testImplementation "org.mockito:mockito-core"
+    testImplementation "org.mockito:mockito-junit-jupiter"
+
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+
+    mockitoAgent("org.mockito:mockito-core") {
+        transitive = false
+    }
 }

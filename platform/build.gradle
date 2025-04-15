@@ -7,7 +7,10 @@ javaPlatform {
 }
 
 dependencies {
+    api platform("org.mockito:mockito-bom:5.17.0")
     constraints {
         api "net.bytebuddy:byte-buddy:1.17.5"
+        api "org.assertj:assertj-core:3.27.3"
+        api "org.junit.jupiter:junit-jupiter:5.12.2"
     }
 }
