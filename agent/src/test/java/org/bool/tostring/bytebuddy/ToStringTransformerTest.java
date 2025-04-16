@@ -1,5 +1,6 @@
 package org.bool.tostring.bytebuddy;
 
+import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType.Builder;
 import net.bytebuddy.dynamic.DynamicType.Builder.MethodDefinition.ImplementationDefinition;
 import net.bytebuddy.dynamic.DynamicType.Builder.MethodDefinition.ReceiverTypeDefinition;
@@ -30,7 +31,23 @@ class ToStringTransformerTest {
         when(definition.intercept(implementation))
             .thenReturn(receiver);
 
-        assertThat(transformer.transform(builder, null, null, null, null))
+        assertThat(transformer.transform(builder, TypeDescription.ForLoadedType.of(String.class), null, null, null))
             .isSameAs(receiver);
+    }
+
+    @Test
+    void testEquals() {
+        assertThat(transformer)
+            .isEqualTo(new ToStringTransformer(implementation));
+        assertThat(transformer)
+            .isNotEqualTo(new ToStringTransformer(null));
+    }
+
+    @Test
+    void testHashCode() {
+        assertThat(transformer.hashCode())
+            .isEqualTo(new ToStringTransformer(implementation).hashCode());
+        assertThat(new ToStringTransformer(null).hashCode())
+            .isEqualTo(new ToStringTransformer(null).hashCode());
     }
 }
