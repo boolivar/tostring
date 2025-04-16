@@ -67,9 +67,10 @@ public class ToStringImplementation implements Implementation, ByteCodeAppender 
         TypeDescription instrumentedType = context.getInstrumentedType();
         FieldList<? extends FieldDescription> fields = instrumentedType.getDeclaredFields();
         String prefix = prefixResolver.resolve(instrumentedType);
-        List<StackManipulation> stack = instrumentedType.getSuperClass().represents(Object.class) && fields.isEmpty()
+        boolean objectIsParent = instrumentedType.getSuperClass().represents(Object.class);
+        List<StackManipulation> stack = objectIsParent && fields.isEmpty()
             ? constantString(prefix)
-            : toStringMethod(instrumentedType, prefix, fields);
+            : toStringMethod(instrumentedType, objectIsParent, prefix, fields);
         return new Size(new StackManipulation.Compound(stack).apply(methodVisitor, context).getMaximalSize(), instrumentedMethod.getStackSize());
     }
 
@@ -77,13 +78,12 @@ public class ToStringImplementation implements Implementation, ByteCodeAppender 
         return Arrays.asList(new TextConstant(prefix + start + end), MethodReturn.REFERENCE);
     }
 
-    private List<StackManipulation> toStringMethod(TypeDescription instrumentedType, String prefix, FieldList<? extends FieldDescription> fields) {
+    private List<StackManipulation> toStringMethod(TypeDescription instrumentedType, boolean objectIsParent, String prefix, FieldList<? extends FieldDescription> fields) {
         List<StackManipulation> stack = new ArrayList<>(fields.size() * 5 + 11);
         stack.add(StringBuilderDefs.typeCreation());
         stack.add(Duplication.SINGLE);
-        if (instrumentedType.getSuperClass().represents(Object.class)) {
+        if (objectIsParent) {
             FieldDescription field = fields.get(0);
-            fields = fields.subList(1, fields.size());
             stack.add(new TextConstant(prefix + start + field.getName() + definer));
             stack.add(StringBuilderDefs.constructor());
             stack.add(MethodVariableAccess.loadThis());
@@ -96,7 +96,7 @@ public class ToStringImplementation implements Implementation, ByteCodeAppender 
             stack.add(toString.special(instrumentedType.getSuperClass().asErasure()));
             stack.add(StringBuilderDefs.append(String.class));
         }
-        for (FieldDescription field : fields) {
+        for (FieldDescription field : objectIsParent ? fields.subList(1, fields.size()) : fields) {
             stack.add(new TextConstant(separator + field.getName() + definer));
             stack.add(StringBuilderDefs.append(String.class));
             stack.add(MethodVariableAccess.loadThis());
