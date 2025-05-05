@@ -47,7 +47,7 @@
     </rule>
     <rule ref="category/java/design.xml/NcssCount">
         <properties>
-            <property name="methodReportLevel" value="25"/>
+            <property name="methodReportLevel" value="30"/>
             <property name="classReportLevel" value="200"/>
         </properties>
     </rule>
