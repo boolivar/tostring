@@ -6,28 +6,33 @@ import net.bytebuddy.implementation.bytecode.StackManipulation;
 import net.bytebuddy.implementation.bytecode.TypeCreation;
 import net.bytebuddy.implementation.bytecode.member.MethodInvocation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class StringBuilderDefs extends ToStringMethod {
     
-    private static final StackManipulation TYPE_CREATION = TypeCreation.of(TypeDescription.ForLoadedType.of(StringBuilder.class));
+    private static final StackManipulation stringBuilderTypeCreation = TypeCreation.of(TypeDescription.ForLoadedType.of(StringBuilder.class));
 
-    private static final StackManipulation CONSTRUCTOR = MethodInvocation.invoke(MethodDescriptionFactory.constructor(StringBuilder.class, String.class));
+    private static final StackManipulation stringBuilderConstructor = MethodInvocation.invoke(MethodDescriptionFactory.constructor(StringBuilder.class, String.class));
 
-    private static final StackManipulation TO_STRING = MethodInvocation.invoke(MethodDescriptionFactory.method(StringBuilder.class, "toString"));
+    private static final StackManipulation stringBuilderToStringMethod = MethodInvocation.invoke(MethodDescriptionFactory.method(StringBuilder.class, "toString"));
+
+    private static final Map<Class<?>, ValueConsumer> representsMapping = defaultRepresentsMapping();
 
     StringBuilderDefs(PrefixResolver prefixResolver) {
         super(prefixResolver);
     }
 
     public static StackManipulation typeCreation() {
-        return TYPE_CREATION;
+        return stringBuilderTypeCreation;
     }
 
     public static StackManipulation constructor() { 
-        return CONSTRUCTOR;
+        return stringBuilderConstructor;
     }
 
     public static StackManipulation toStringMethod() { 
-        return TO_STRING;
+        return stringBuilderToStringMethod;
     }
 
     public static StackManipulation append(Class<?> argType) {
@@ -35,46 +40,44 @@ public class StringBuilderDefs extends ToStringMethod {
     }
 
     public static StackManipulation append(TypeDescription argType) {
-        if (argType.represents(boolean.class)) {
-            return ValueConsumer.BOOLEAN;
-        } else if (argType.represents(char.class)) {
-            return ValueConsumer.CHARACTER;
-        } else if (argType.represents(byte.class)
-                || argType.represents(short.class)
-                || argType.represents(int.class)) {
-            return ValueConsumer.INTEGER;
-        } else if (argType.represents(long.class)) {
-            return ValueConsumer.LONG;
-        } else if (argType.represents(float.class)) {
-            return ValueConsumer.FLOAT;
-        } else if (argType.represents(double.class)) {
-            return ValueConsumer.DOUBLE;
-        } else if (argType.represents(String.class)) {
-            return ValueConsumer.STRING;
-        } else if (argType.isAssignableTo(CharSequence.class)) {
+        for (Map.Entry<Class<?>, ValueConsumer> e : representsMapping.entrySet()) {
+            if (argType.represents(e.getKey())) {
+                return e.getValue();
+            }
+        }
+        if (argType.isAssignableTo(CharSequence.class)) {
             return ValueConsumer.CHARACTER_SEQUENCE;
-        } else if (argType.represents(boolean[].class)) {
-            return ValueConsumer.BOOLEAN_ARRAY;
-        } else if (argType.represents(byte[].class)) {
-            return ValueConsumer.BYTE_ARRAY;
-        } else if (argType.represents(short[].class)) {
-            return ValueConsumer.SHORT_ARRAY;
-        } else if (argType.represents(char[].class)) {
-            return ValueConsumer.CHARACTER_ARRAY;
-        } else if (argType.represents(int[].class)) {
-            return ValueConsumer.INTEGER_ARRAY;
-        } else if (argType.represents(long[].class)) {
-            return ValueConsumer.LONG_ARRAY;
-        } else if (argType.represents(float[].class)) {
-            return ValueConsumer.FLOAT_ARRAY;
-        } else if (argType.represents(double[].class)) {
-            return ValueConsumer.DOUBLE_ARRAY;
-        } else if (argType.isArray()) {
+        }
+        if (argType.isArray()) {
             return argType.getComponentType().isArray()
                 ? ValueConsumer.NESTED_ARRAY
                 : ValueConsumer.REFERENCE_ARRAY;
-        } else {
-            return ValueConsumer.OBJECT;
         }
+        return ValueConsumer.OBJECT;
+    }
+
+    private static Map<Class<?>, ValueConsumer> defaultRepresentsMapping() {
+        Map<Class<?>, ValueConsumer> mapping = new HashMap<>();
+
+        mapping.put(boolean.class, ValueConsumer.BOOLEAN);
+        mapping.put(char.class, ValueConsumer.CHARACTER);
+        mapping.put(byte.class, ValueConsumer.INTEGER);
+        mapping.put(short.class, ValueConsumer.INTEGER);
+        mapping.put(int.class, ValueConsumer.INTEGER);
+        mapping.put(long.class, ValueConsumer.LONG);
+        mapping.put(float.class, ValueConsumer.FLOAT);
+        mapping.put(double.class, ValueConsumer.DOUBLE);
+        mapping.put(String.class, ValueConsumer.STRING);
+
+        mapping.put(boolean[].class, ValueConsumer.BOOLEAN_ARRAY);
+        mapping.put(char[].class, ValueConsumer.CHARACTER_ARRAY);
+        mapping.put(byte[].class, ValueConsumer.BYTE_ARRAY);
+        mapping.put(short[].class, ValueConsumer.SHORT_ARRAY);
+        mapping.put(int[].class, ValueConsumer.INTEGER_ARRAY);
+        mapping.put(long[].class, ValueConsumer.LONG_ARRAY);
+        mapping.put(float[].class, ValueConsumer.FLOAT_ARRAY);
+        mapping.put(double[].class, ValueConsumer.DOUBLE_ARRAY);
+
+        return mapping;
     }
 }
