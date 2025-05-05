@@ -4,6 +4,7 @@ import net.bytebuddy.description.field.FieldDescription;
 import net.bytebuddy.description.field.FieldList;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
+import net.bytebuddy.description.type.TypeDescription.Generic;
 import net.bytebuddy.dynamic.scaffold.InstrumentedType;
 import net.bytebuddy.implementation.Implementation;
 import net.bytebuddy.implementation.ToStringMethod.PrefixResolver;
@@ -67,7 +68,8 @@ public class ToStringImplementation implements Implementation, ByteCodeAppender 
         TypeDescription instrumentedType = context.getInstrumentedType();
         FieldList<? extends FieldDescription> fields = instrumentedType.getDeclaredFields();
         String prefix = prefixResolver.resolve(instrumentedType);
-        boolean objectIsParent = instrumentedType.getSuperClass().represents(Object.class);
+        Generic superClass = instrumentedType.getSuperClass();
+        boolean objectIsParent = superClass == null || superClass.represents(Object.class);
         List<StackManipulation> stack = objectIsParent && fields.isEmpty()
             ? constantString(prefix)
             : toStringMethod(instrumentedType, objectIsParent, prefix, fields);
