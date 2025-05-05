@@ -8,6 +8,7 @@ import net.bytebuddy.implementation.bytecode.member.MethodInvocation;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class StringBuilderDefs extends ToStringMethod {
     
@@ -49,7 +50,7 @@ public class StringBuilderDefs extends ToStringMethod {
             return ValueConsumer.CHARACTER_SEQUENCE;
         }
         if (argType.isArray()) {
-            return argType.getComponentType().isArray()
+            return Objects.requireNonNull(argType.getComponentType()).isArray()
                 ? ValueConsumer.NESTED_ARRAY
                 : ValueConsumer.REFERENCE_ARRAY;
         }
