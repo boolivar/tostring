@@ -8,6 +8,7 @@ import net.bytebuddy.implementation.Implementation;
 import net.bytebuddy.utility.JavaModule;
 
 import java.security.ProtectionDomain;
+import java.util.Objects;
 
 import static net.bytebuddy.matcher.ElementMatchers.isToString;
 
@@ -27,10 +28,7 @@ public class ToStringTransformer implements Transformer {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((implementation == null) ? 0 : implementation.hashCode());
-        return result;
+        return Objects.hash(implementation);
     }
 
     @Override
@@ -45,13 +43,6 @@ public class ToStringTransformer implements Transformer {
             return false;
         }
         ToStringTransformer other = (ToStringTransformer) obj;
-        if (implementation == null) {
-            if (other.implementation != null) {
-                return false;
-            }
-        } else if (!implementation.equals(other.implementation)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(implementation, other.implementation);
     }
 }

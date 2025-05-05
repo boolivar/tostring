@@ -22,10 +22,11 @@ import net.bytebuddy.jar.asm.MethodVisitor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class ToStringImplementation implements Implementation, ByteCodeAppender {
 
-    private final WithImplicitInvocationTargetType toString = MethodInvocation.invoke(MethodDescriptionFactory.method(Object.class, "toString"));
+    private static final WithImplicitInvocationTargetType toStringInvocation = MethodInvocation.invoke(MethodDescriptionFactory.method(Object.class, "toString"));
 
     private final PrefixResolver prefixResolver;
 
@@ -95,7 +96,7 @@ public class ToStringImplementation implements Implementation, ByteCodeAppender 
             stack.add(new TextConstant(prefix + start + "super" + definer));
             stack.add(StringBuilderDefs.constructor());
             stack.add(MethodVariableAccess.loadThis());
-            stack.add(toString.special(instrumentedType.getSuperClass().asErasure()));
+            stack.add(toStringInvocation.special(instrumentedType.getSuperClass().asErasure()));
             stack.add(StringBuilderDefs.append(String.class));
         }
         for (FieldDescription field : objectIsParent ? fields.subList(1, fields.size()) : fields) {
@@ -114,14 +115,7 @@ public class ToStringImplementation implements Implementation, ByteCodeAppender 
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((definer == null) ? 0 : definer.hashCode());
-        result = prime * result + ((end == null) ? 0 : end.hashCode());
-        result = prime * result + ((prefixResolver == null) ? 0 : prefixResolver.hashCode());
-        result = prime * result + ((separator == null) ? 0 : separator.hashCode());
-        result = prime * result + ((start == null) ? 0 : start.hashCode());
-        return result;
+        return Objects.hash(definer, end, prefixResolver, separator, start);
     }
 
     @Override
@@ -136,41 +130,8 @@ public class ToStringImplementation implements Implementation, ByteCodeAppender 
             return false;
         }
         ToStringImplementation other = (ToStringImplementation) obj;
-        if (definer == null) {
-            if (other.definer != null) {
-                return false;
-            }
-        } else if (!definer.equals(other.definer)) {
-            return false;
-        }
-        if (end == null) {
-            if (other.end != null) {
-                return false;
-            }
-        } else if (!end.equals(other.end)) {
-            return false;
-        }
-        if (prefixResolver == null) {
-            if (other.prefixResolver != null) {
-                return false;
-            }
-        } else if (!prefixResolver.equals(other.prefixResolver)) {
-            return false;
-        }
-        if (separator == null) {
-            if (other.separator != null) {
-                return false;
-            }
-        } else if (!separator.equals(other.separator)) {
-            return false;
-        }
-        if (start == null) {
-            if (other.start != null) {
-                return false;
-            }
-        } else if (!start.equals(other.start)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(definer, other.definer) && Objects.equals(end, other.end)
+            && Objects.equals(prefixResolver, other.prefixResolver) && Objects.equals(separator, other.separator)
+            && Objects.equals(start, other.start);
     }
 }
