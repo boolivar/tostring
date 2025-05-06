@@ -4,11 +4,12 @@ import net.bytebuddy.implementation.ToStringMethod;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 class StringBuilderDefsTest extends ToStringMethod {
 
     StringBuilderDefsTest() {
-        super(null);
+        super(type -> fail("%s", type));
     }
 
     @Test
