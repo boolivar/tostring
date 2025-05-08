@@ -4,15 +4,18 @@ plugins {
 }
 
 jar {
-    manifest {
-        attributes("Premain-Class": "org.bool.tostring.agent.ToStringAgent")
-    }
+    enabled = false
 }
 
 shadowJar {
+    dependsOn check
+    archiveClassifier = ""
     enableRelocation = true
-    relocationPrefix = "org.bool.tostring.agent.shadow"
+    relocationPrefix = "org.bool.tostring.shadow"
     exclude "META-INF/versions/24/"
+    manifest {
+        attributes("Premain-Class": "org.bool.tostring.agent.ToStringAgent")
+    }
 }
 
 assemble.dependsOn shadowJar
