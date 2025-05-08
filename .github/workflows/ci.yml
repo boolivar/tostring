@@ -15,8 +15,8 @@ jobs:
         distribution: 'temurin'
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
-    - name: Run Gradle checks
-      run: ./gradlew check
+    - name: Build
+      run: ./gradlew check shadowJar
     - name: Upload test reports
       if: ${{ !cancelled() }}
       uses: actions/upload-artifact@v4
@@ -30,3 +30,8 @@ jobs:
       with:
         target-branch: ${{ github.ref_name }}
         token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+    - name: Upload Release Artifact
+      if: ${{ steps.release.outputs.release_created }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: gh release upload ${{ steps.release.outputs.tag_name }} ./agent/build/libs/agent-${{ steps.release.outputs.version }}.jar#tostring-agent-${{ steps.release.outputs.version }}.jar
