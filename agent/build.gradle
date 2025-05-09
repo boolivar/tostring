@@ -3,12 +3,9 @@ plugins {
     id "com.gradleup.shadow" version "8.3.6"
 }
 
-jar {
-    enabled = false
-}
-
 shadowJar {
     dependsOn check
+    archiveBaseName = "tostring-agent"
     archiveClassifier = ""
     enableRelocation = true
     relocationPrefix = "org.bool.tostring.shadow"
