@@ -9,5 +9,5 @@ repositories {
 dependencies {
     implementation "com.github.spotbugs:com.github.spotbugs.gradle.plugin:6.1.7"
     implementation "com.puppycrawl.tools:checkstyle:10.25.0"
-    implementation "net.sourceforge.pmd:pmd-java:7.16.0"
+    implementation "net.sourceforge.pmd:pmd-java:7.18.0"
 }
