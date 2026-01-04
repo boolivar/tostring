@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/boolivar/tostring/compare/1.0.0...1.1.0) (2026-01-04)
+
+
+### Features
+
+* --force and regex options ([c2439af](https://github.com/boolivar/tostring/commit/c2439af90d57609f526a8a57a471d34a863bd668))
+
 ## 1.0.0 (2025-05-09)
 
 
