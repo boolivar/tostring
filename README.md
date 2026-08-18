@@ -1,5 +1,8 @@
 # ToString Agent
 
+[![CI](https://github.com/boolivar/tostring/actions/workflows/ci.yml/badge.svg)](https://github.com/boolivar/tostring/actions/workflows/ci.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/boolivar/tostring?sort=semver)](https://github.com/boolivar/tostring/releases/latest)
+
 ## Overview
 The `ToString Agent` is a Java instrumentation agent designed to enhance `toString()` method representation in Java applications.
 
