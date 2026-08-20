@@ -3,6 +3,8 @@ on: push
 permissions:
   contents: write
   pull-requests: write
+env:
+  IS_DEPENDABOT: ${{ startsWith(github.ref_name, 'dependabot/') && 'yes' || '' }}
 jobs:
   build:
     if: ${{ !startsWith(github.event.head_commit.message, 'docs') }}
@@ -16,8 +18,17 @@ jobs:
         distribution: 'temurin'
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v6
+    - name: Cache SonarCloud packages
+      if: ${{ !env.IS_DEPENDABOT }}
+      uses: actions/cache@v5
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
     - name: Run Gradle checks
-      run: ./gradlew check
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: ./gradlew ${{ env.IS_DEPENDABOT && 'check' || 'check sonar' }} --stacktrace
     - name: Upload test reports
       if: ${{ !cancelled() }}
       uses: actions/upload-artifact@v7
