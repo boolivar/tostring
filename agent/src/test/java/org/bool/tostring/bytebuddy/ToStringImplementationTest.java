@@ -21,8 +21,8 @@ class ToStringImplementationTest {
             .load(getClass().getClassLoader(), ClassLoadingStrategy.Default.CHILD_FIRST)
             .getLoaded();
 
-        assertThat(dynamicType.getDeclaredConstructor(String.class, int.class).newInstance("test", 22).toString())
-            .isEqualTo("SimpleDto(name=test, value=22)");
+        assertThat(dynamicType.getDeclaredConstructor(String.class, int.class).newInstance("test", 22))
+            .hasToString("SimpleDto(name=test, value=22)");
     }
 
     @Test
@@ -39,11 +39,12 @@ class ToStringImplementationTest {
 
     @Test
     void testHashCode() {
-        assertThat(implementation.hashCode())
-            .isEqualTo(new ToStringImplementation("(", ")").hashCode())
+        assertThat(implementation)
+            .hasSameHashCodeAs(new ToStringImplementation("(", ")"))
             ;
-        assertThat(new ToStringImplementation().hashCode())
-            .isEqualTo(new ToStringImplementation().hashCode())
+        assertThat(new ToStringImplementation())
+            .hasSameHashCodeAs(new ToStringImplementation())
+            .doesNotHaveSameHashCodeAs(implementation)
             ;
     }
 }

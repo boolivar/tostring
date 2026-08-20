@@ -38,16 +38,15 @@ class ToStringTransformerTest {
     @Test
     void testEquals() {
         assertThat(transformer)
-            .isEqualTo(new ToStringTransformer(implementation));
-        assertThat(transformer)
+            .isEqualTo(new ToStringTransformer(implementation))
             .isNotEqualTo(new ToStringTransformer(null));
     }
 
     @Test
     void testHashCode() {
-        assertThat(transformer.hashCode())
-            .isEqualTo(new ToStringTransformer(implementation).hashCode());
-        assertThat(new ToStringTransformer(null).hashCode())
-            .isEqualTo(new ToStringTransformer(null).hashCode());
+        assertThat(transformer)
+            .hasSameHashCodeAs(new ToStringTransformer(implementation));
+        assertThat(new ToStringTransformer(null))
+            .hasSameHashCodeAs(new ToStringTransformer(null));
     }
 }
