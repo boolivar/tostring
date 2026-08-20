@@ -3,6 +3,14 @@
 [![CI](https://github.com/boolivar/tostring/actions/workflows/ci.yml/badge.svg)](https://github.com/boolivar/tostring/actions/workflows/ci.yml)
 [![GitHub Release](https://img.shields.io/github/v/release/boolivar/tostring?sort=semver)](https://github.com/boolivar/tostring/releases/latest)
 
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=boolivar_tostring&metric=coverage)](https://sonarcloud.io/summary/new_code?id=boolivar_tostring)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=boolivar_tostring&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=boolivar_tostring)
+
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=boolivar_tostring&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=boolivar_tostring)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=boolivar_tostring&metric=bugs)](https://sonarcloud.io/summary/new_code?id=boolivar_tostring)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=boolivar_tostring&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=boolivar_tostring)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=boolivar_tostring&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=boolivar_tostring)
+
 ## Overview
 The `ToString Agent` is a Java instrumentation agent designed to enhance `toString()` method representation in Java applications.
 
