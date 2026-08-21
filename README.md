@@ -37,6 +37,40 @@ Replace path/to/tostring-agent.jar with the actual path to the agent JAR file.
 
 That's it! The agent will automatically instrument your classes at runtime.
 
+#### Example
+
+```java
+package org.bool.example;
+
+import java.util.List;
+
+public class InterestingComponent {
+
+    private final String code;
+
+    private final int number;
+
+    private final List<String> values;
+
+    public InterestingComponent(String code, int number, List<String> values) {
+        this.code = code;
+        this.number = number;
+        this.values = values;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new InterestingComponent("A4", 42, List.of("a", "4")));
+    }
+}
+```
+<pre>
+java -jar example.jar                                            
+org.bool.example.InterestingComponent@568db2f2
+
+<!-- x-release-please-version -->java -javaagent:tostring-agent-1.1.0.jar -jar example.jar        
+InterestingComponent {code=A4, number=42, values=[a, 4]}
+</pre>
+
 ## Agent arguments
 
 You can control instrumentation by supplying arguments to the agent, separated by commas:
