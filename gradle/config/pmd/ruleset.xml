@@ -41,9 +41,9 @@
         <exclude name="AvoidCatchingGenericException"/>
         <exclude name="AvoidThrowingRawExceptionTypes"/>
         <exclude name="DataClass"/>
+        <exclude name="InstantiableUtilityClass"/>
         <exclude name="LawOfDemeter"/>
         <exclude name="LoosePackageCoupling"/>
-        <exclude name="UseUtilityClass"/>
     </rule>
     <rule ref="category/java/design.xml/NcssCount">
         <properties>
