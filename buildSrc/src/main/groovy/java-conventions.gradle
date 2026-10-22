@@ -9,9 +9,6 @@ plugins {
 group = "org.bool"
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
     withJavadocJar()
     withSourcesJar()
 }
@@ -87,6 +84,9 @@ configurations {
 }
 
 dependencies {
+    if (pmdAuxClasspath) {
+        pmdAux files(pmdAuxClasspath)
+    }
     implementation platform(project(":platform"))
     mockitoAgent platform(project(":platform"))
 
