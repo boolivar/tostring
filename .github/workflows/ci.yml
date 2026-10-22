@@ -11,13 +11,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v7
-    - name: Set up JDK
-      uses: actions/setup-java@v5
+
+    - name: Set up build JDK
+      uses: actions/setup-java@v6
       with:
         java-version: '21'
         distribution: 'temurin'
+
+    - name: Set up target JDK
+      id: jdk8
+      uses: actions/setup-java@v6
+      with:
+        java-version: '8'
+        distribution: 'temurin'
+        set-default: false
+
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v6
+
     - name: Cache SonarCloud packages
       if: ${{ !env.IS_DEPENDABOT }}
       uses: actions/cache@v5
@@ -25,16 +36,19 @@ jobs:
         path: ~/.sonar/cache
         key: ${{ runner.os }}-sonar
         restore-keys: ${{ runner.os }}-sonar
+
     - name: Run Gradle checks
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: ./gradlew ${{ env.IS_DEPENDABOT && 'check' || 'check sonar' }} --stacktrace
+      run: ./gradlew --stacktrace -PpmdAuxClasspath=${{ steps.jdk8.outputs.path }}/jre/lib/rt.jar ${{ env.IS_DEPENDABOT && 'check' || 'check sonar' }}
+
     - name: Upload test reports
       if: ${{ !cancelled() }}
       uses: actions/upload-artifact@v7
       with:
         name: reports
         path: '**/build/reports/**/*'
+
     - name: Release please
       id: release
       if: ${{ github.ref_name == 'master' || startsWith(github.ref_name, 'release/') }}
@@ -42,9 +56,11 @@ jobs:
       with:
         target-branch: ${{ github.ref_name }}
         token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+
     - name: Create Release Artifact
       if: ${{ steps.release.outputs.release_created }}
       run: ./gradlew -P release.forceVersion=${{ steps.release.outputs.version }} createRelease && ./gradlew -x check shadowJar
+
     - name: Upload Release Artifact
       if: ${{ steps.release.outputs.release_created }}
       env:
