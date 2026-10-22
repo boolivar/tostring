@@ -11,6 +11,11 @@
         <exclude name="UnitTestAssertionsShouldIncludeMessage"/>
         <exclude name="UnitTestContainsTooManyAsserts"/>
     </rule>
+    <rule ref="category/java/bestpractices.xml/OnDemandImport">
+        <properties>
+            <property name="allowStaticImportsFrom" value="*"/>
+        </properties>
+    </rule>
     <rule ref="category/java/bestpractices.xml/UnitTestShouldIncludeAssert">
         <properties>
             <property name="extraAssertMethodNames" value="verify,then"/>
